@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-primary: #0F172A;
+  --color-brand-blue: #2563EB;
+  --color-brand-blue-hover: #1D4ED8;
+  --color-brand-amber: #F59E0B;
+  --color-brand-amber-hover: #D97706;
+  --color-brand-canvas: #F8FAFC;
+  --color-brand-border: #E2E8F0;
+  --color-brand-text: #1E293B;
+  --color-brand-muted: #64748B;
+  --color-brand-emerald: #10B981;
+  --color-brand-orange: #F97316;
+  --color-brand-rose: #EF4444;
+
+  --font-heading: var(--font-plus-jakarta-sans), system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+}
+
+:root {
+  --background: #F8FAFC;
+  --foreground: #0F172A;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
+}
+
+/* UI/UX Pro Max: Automotive tabular rate clarity */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* UI/UX Pro Max Accessibility: Minimum 44x44px touch targets */
+.min-touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spinSlow 20s linear infinite;
+}
+
+*:focus-visible {
+  outline: 2px solid #2563EB;
+  outline-offset: 2px;
+}
