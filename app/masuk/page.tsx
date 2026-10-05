@@ -39,7 +39,7 @@ function LoginForm() {
   // Multi-rental context selection modal
   const [contextModalUser, setContextModalUser] = useState<User | null>(null);
 
-  const handleLoginSubmit = (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
 
@@ -55,41 +55,80 @@ function LoginForm() {
       return;
     }
 
-    setIsLoading(true);
+        setIsLoading(true);
 
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      // Login via Backend FastAPI
+      const formData = new URLSearchParams();
+      formData.append("username", identifier.trim());
+      formData.append("password", password);
 
-      // Match against mock database
-      const foundUser = authState.allUsers.find(
-        (u) =>
-          u.email.toLowerCase() === identifier.trim().toLowerCase() ||
-          u.phone === identifier.trim()
-      );
+      const response = await fetch("http://localhost:8000/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: formData.toString(),
+      });
 
-      // Simple password check (demo accepts "password" or matching mock)
-      if (foundUser && (password === "password" || password.length >= 6)) {
-        // Check if multi-rental staff (FR-AUTH-002 alternative)
-        if (
-          foundUser.role === "STAFF_OPERASIONAL" &&
-          foundUser.secondaryRentalIds &&
-          foundUser.secondaryRentalIds.length > 0
-        ) {
-          setContextModalUser(foundUser);
-          return;
-        }
-
-        executeLogin(foundUser);
-      } else {
-        const nextAttempts = failedAttempts + 1;
-        setFailedAttempts(nextAttempts);
-        setErrorMessage(
-          nextAttempts >= 3
-            ? `Email/Nomor WhatsApp atau kata sandi tidak cocok. (${nextAttempts}/5 percobaan sebelum akun terkunci sementara)`
-            : "Email/Nomor WhatsApp atau kata sandi tidak cocok. Silakan periksa kembali."
-        );
+      if (!response.ok) {
+        throw new Error("Kredensial tidak valid");
       }
-    }, 400);
+
+      const data = await response.json();
+      const token = data.access_token;
+      
+      // Get User Profile using the token
+      const profileResponse = await fetch("http://localhost:8000/auth/me", {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      
+      if (!profileResponse.ok) {
+         throw new Error("Gagal mengambil profil user");
+      }
+      
+      const backendUser = await profileResponse.json();
+      
+      // Store token on the zustand mock-store to maintain continuity
+            const foundUser: User = {
+        id: backendUser.id.toString(),
+        name: backendUser.name,
+        email: backendUser.email,
+        phone: backendUser.phone || "",
+        role: backendUser.role,
+        isActive: true,
+        verificationStatus: "BELUM_VERIFIKASI",
+        consentAccepted: true,
+        consentTimestamp: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+      };
+      
+      store.login(foundUser);
+      localStorage.setItem("driveo_token", token);
+      
+      // Routing logic
+      if (redirectParam && redirectParam.startsWith("/")) {
+        router.push(redirectParam);
+      } else if (["RENTAL", "STAFF_OPERASIONAL", "STAFF_KEUANGAN"].includes(foundUser.role)) {
+        router.push("/mitra/dashboard");
+      } else if (["ADMIN", "SUPER_ADMIN", "TIM_VERIFIKASI"].includes(foundUser.role)) {
+        router.push("/admin/dashboard");
+      } else {
+        router.push("/akun");
+      }
+    } catch (error) {
+      const nextAttempts = failedAttempts + 1;
+      setFailedAttempts(nextAttempts);
+      setErrorMessage(
+        nextAttempts >= 3
+          ? `Kredensial tidak cocok. (${nextAttempts}/5 percobaan sebelum akun terkunci)`
+          : "Kredensial tidak cocok. Silakan periksa kembali."
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const executeLogin = (

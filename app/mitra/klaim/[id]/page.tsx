@@ -1,0 +1,14 @@
+"use client";
+
+import Link from "next/link";
+import { MitraNav } from "@/components/mitra/mitra-nav";
+import { useBookings } from "@/lib/store/booking-store";
+import { usePhase10Mitra } from "@/lib/store/phase10-mitra-store";
+import { formatIndonesianDate, formatRupiah } from "@/lib/utils";
+import { Banknote, BadgeCheck, Car, CheckCircle2, Clock, Download, FileText, MessageSquare, ShieldCheck, Star, Upload, UserCheck, Wallet } from "lucide-react";
+
+function Shell({ tab="keuangan", title, subtitle, children }: { tab?: any; title: string; subtitle: string; children: React.ReactNode }) { return <div className="min-h-screen bg-slate-50 text-slate-800"><MitraNav currentTab={tab}/><main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6"><div><span className="inline-flex px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold mb-3">Fase 10 Mitra</span><h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-950">{title}</h1><p className="text-sm text-slate-500 mt-1 max-w-3xl">{subtitle}</p></div>{children}</main></div> }
+function Card({children}: {children: React.ReactNode}) { return <section className="bg-white rounded-3xl border border-slate-200 p-6 shadow-xs">{children}</section> }
+function Money({ value }: { value: number }) { return <span className="font-mono font-extrabold tabular-nums">{formatRupiah(value)}</span> }
+
+export default function ClaimDetailPage(){ const { claims } = usePhase10Mitra(); const c = claims[0]; return <Shell tab="booking" title="Detail Status Klaim Kerusakan" subtitle="Workspace ringkas untuk membaca bukti klaim, estimasi bengkel, status mediasi, dan catatan keputusan."><div className="grid lg:grid-cols-3 gap-6"><Card><h2 className="font-extrabold text-slate-950">{c.claimCode}</h2><p className="text-sm text-slate-500 mt-1">{formatIndonesianDate(c.submittedAt)}</p><div className="mt-5 space-y-3 text-sm"><p><b>Booking:</b> {c.bookingCode}</p><p><b>Penyewa:</b> {c.renterName}</p><p><b>Plat:</b> {c.licensePlate}</p><p><b>Kategori:</b> {c.category.replaceAll("_"," ")}</p><p><b>Nominal:</b> <Money value={c.claimedAmount}/></p></div></Card><Card><h2 className="font-extrabold text-slate-950 mb-4">Bukti foto mitra</h2><div className="grid grid-cols-2 gap-3">{[0,1,2,3].map((i)=><div key={i} className="h-28 rounded-2xl bg-slate-100 border border-dashed border-slate-300 flex items-center justify-center"><Upload className="w-5 h-5 text-slate-400"/></div>)}</div></Card><Card><h2 className="font-extrabold text-slate-950">Status mediasi</h2><div className="mt-4 p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-sm font-semibold">{c.status.replaceAll("_"," ")}</div><p className="mt-4 text-sm text-slate-600">{c.mediatorNote || "Menunggu mediator DriveO memeriksa foto awal, foto kembali, dan estimasi biaya bengkel."}</p></Card></div></Shell> }

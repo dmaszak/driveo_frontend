@@ -80,8 +80,21 @@ export default function TambahKendaraanPage() {
   const [galleryImages, setGalleryImages] = useState<string[]>([
     "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=1200&q=80",
     "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=1200&q=80",
-    "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80",
   ]);
+
+  const handleAddSampleImage = () => {
+    const samples = [
+      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=1200&q=80",
+    ];
+    const nextImg = samples[galleryImages.length % samples.length];
+    setGalleryImages((prev) => [...prev, nextImg]);
+  };
+
+  const removeGalleryImage = (index: number) => {
+    setGalleryImages((prev) => prev.filter((_, i) => i !== index));
+  };
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -539,6 +552,67 @@ export default function TambahKendaraanPage() {
                 );
               })}
             </div>
+          </div>
+
+
+          {/* SECTION 5: Galeri Foto Fisik Unit (Tampilan Marketplace) */}
+          <div className="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2">
+                <Camera className="w-5 h-5 text-blue-600" />
+                <h2 className="text-base font-bold text-slate-900">5. Galeri Foto Fisik Unit Kendaraan</h2>
+              </div>
+              <span className="text-xs font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200">
+                {galleryImages.length} Foto Terunggah
+              </span>
+            </div>
+
+            <p className="text-xs text-slate-500">
+              Unggah foto asli kendaraan (minimal 2 foto: eksterior tampak depan/samping & interior bersih). Foto resolusi tinggi meningkatkan konversi sewa hingga 40%.
+            </p>
+
+            {/* Dropzone Upload */}
+            <div className="border-2 border-dashed border-slate-300 rounded-2xl p-6 bg-slate-50/60 text-center hover:bg-slate-50 transition-colors">
+              <div className="w-12 h-12 rounded-2xl bg-blue-100/80 text-blue-600 flex items-center justify-center mx-auto mb-3">
+                <Upload className="w-6 h-6" />
+              </div>
+              <h3 className="text-xs font-bold text-slate-900">Upload Foto Eksterior & Interior Mobil</h3>
+              <p className="text-[11px] text-slate-500 mt-1 mb-4">
+                Format PNG, JPG, atau WEBP (Maksimal 10MB per foto). Rekomendasi rasio 16:9.
+              </p>
+              <button
+                type="button"
+                onClick={handleAddSampleImage}
+                className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs inline-flex items-center gap-2 min-h-[44px] cursor-pointer"
+              >
+                <Camera className="w-4 h-4" />
+                <span>+ Tambah / Unggah Foto Unit</span>
+              </button>
+            </div>
+
+            {/* Photo Previews */}
+            {galleryImages.length > 0 && (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                {galleryImages.map((url, idx) => (
+                  <div key={idx} className="relative group rounded-xl overflow-hidden border border-slate-200 bg-slate-100 aspect-4/3">
+                    <img src={url} alt={`Foto Unit ${idx + 1}`} className="w-full h-full object-cover" />
+                    {idx === 0 && (
+                      <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-blue-600 text-white text-[10px] font-bold shadow-xs">
+                        Utama (Thumbnail)
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => removeGalleryImage(idx)}
+                      className="absolute top-2 right-2 p-1.5 rounded-lg bg-rose-600/90 text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity min-h-[32px] min-w-[32px] flex items-center justify-center"
+                      title="Hapus foto"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Form Actions Submit */}
