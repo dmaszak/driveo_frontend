@@ -1,0 +1,26 @@
+"use client";
+
+import Link from "next/link";
+import { MitraNav } from "@/components/mitra/mitra-nav";
+import { useBookings } from "@/lib/store/booking-store";
+import { usePhase10Mitra } from "@/lib/store/phase10-mitra-store";
+import { formatIndonesianDate, formatRupiah } from "@/lib/utils";
+import { ArrowLeft, BadgeCheck, Banknote, Camera, Car, CheckCircle2, Clock, Download, FileText, Fuel, Gauge, MessageSquare, ShieldCheck, Star, Upload, UserCheck, Wallet } from "lucide-react";
+
+const inspectionPoints = ["Bumper depan", "Bumper belakang", "Sisi kanan", "Sisi kiri", "Interior & jok", "Ban & velg", "Dokumen STNK", "Toolkit darurat"];
+
+function PageShell({ title, subtitle, children }: { title: string; subtitle: string; children: React.ReactNode }) {
+  return <div className="min-h-screen bg-slate-50 text-slate-800"><MitraNav currentTab="booking" /><main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6"><div className="flex items-center justify-between gap-4"><div><Link href="/mitra/booking" className="inline-flex items-center gap-1 text-xs font-bold text-blue-700 hover:text-blue-800 mb-3"><ArrowLeft className="w-3.5 h-3.5" />Kembali ke Pesanan</Link><h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-950">{title}</h1><p className="text-sm text-slate-500 mt-1 max-w-2xl">{subtitle}</p></div><span className="hidden sm:inline-flex px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold">Fase 10 Mitra</span></div>{children}</main></div>
+}
+
+function StatusCard({ icon: Icon, label, value, tone = "blue" }: { icon: any; label: string; value: string; tone?: "blue"|"emerald"|"amber"|"rose" }) {
+  const colors = { blue: "bg-blue-50 text-blue-700 border-blue-200", emerald: "bg-emerald-50 text-emerald-700 border-emerald-200", amber: "bg-amber-50 text-amber-700 border-amber-200", rose: "bg-rose-50 text-rose-700 border-rose-200" };
+  return <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs"><div className={`w-10 h-10 rounded-xl border flex items-center justify-center ${colors[tone]}`}><Icon className="w-5 h-5" /></div><p className="text-xs text-slate-500 font-semibold mt-4">{label}</p><p className="text-lg font-extrabold text-slate-950 mt-1">{value}</p></div>
+}
+
+export default function MitraReturnPage({ params }: { params: Promise<{ id: string }> }) {
+  const { bookings, saveReturn } = useBookings();
+  const booking = bookings.find((b) => b.status === "DALAM_SEWA") || bookings[0];
+  const submit = () => saveReturn(booking.id, { returnedAt: new Date().toISOString(), fuelLevelReturn: "FULL", odometerKmReturn: 24940, photosReturn: { front: booking.vehicleThumbnail, back: booking.vehicleThumbnail, right: booking.vehicleThumbnail, left: booking.vehicleThumbnail }, inspectionPointsReturn: inspectionPoints.map((label, i) => ({ key: `r-${i}`, label, status: i === 2 ? "ISSUE" as const : "GOOD" as const, notes: i === 2 ? "Baret halus perlu review deposit" : undefined })), isOvertime: false, overtimeHours: 0, overtimeFee: 0, fuelPenaltyFee: 0, renterReturnSignature: booking.userName, partnerStaffReturnName: "Danang Prasetyo", partnerReturnSignature: "Danang Prasetyo", hasDisputeClaim: true, depositReleaseDueAt: new Date(Date.now()+86400000).toISOString() });
+  return <PageShell title="Form Inspeksi Pengembalian Sisi Rental" subtitle="Bandingkan kondisi awal vs kondisi kembali, hitung denda otomatis, dan buka claim window deposit 24 jam."><div className="grid md:grid-cols-4 gap-4"><StatusCard icon={Clock} label="Keterlambatan" value="0 Jam" tone="emerald"/><StatusCard icon={Fuel} label="Penalti BBM" value={formatRupiah(0)}/><StatusCard icon={ShieldCheck} label="Claim window" value="24 Jam" tone="amber"/><StatusCard icon={Wallet} label="Deposit" value={formatRupiah(booking.securityDeposit)} tone="blue"/></div><div className="grid lg:grid-cols-2 gap-6"><section className="bg-white border border-slate-200 rounded-3xl p-6"><h2 className="font-extrabold mb-4">Komparasi foto serah terima vs kembali</h2><div className="grid sm:grid-cols-2 gap-3">{["Depan", "Belakang", "Kanan", "Kiri"].map((side) => <div key={side} className="rounded-2xl border border-slate-200 bg-slate-50 p-3"><p className="text-xs font-black text-slate-700 mb-2">Sisi {side}</p><div className="grid grid-cols-2 gap-2"><div className="h-24 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-xs font-bold text-blue-700">Awal</div><div className="h-24 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-xs font-bold text-amber-700">Kembali</div></div></div>)}</div></section><section className="bg-white border border-slate-200 rounded-3xl p-6"><h2 className="font-extrabold mb-4">Checklist pengembalian</h2><div className="space-y-2">{inspectionPoints.map((item, i) => <div key={item} className={`p-3 rounded-2xl border text-sm font-semibold flex justify-between ${i===2 ? "bg-amber-50 border-amber-200 text-amber-900" : "bg-emerald-50 border-emerald-200 text-emerald-900"}`}><span>{item}</span><span>{i===2 ? "Perlu klaim" : "Baik"}</span></div>)}</div><button onClick={submit} className="mt-5 w-full min-h-[44px] rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-extrabold">Simpan Pengembalian</button></section></div></PageShell>
+}
