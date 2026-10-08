@@ -74,9 +74,9 @@ export function MitraNav({ currentTab, actionButton }: MitraNavProps) {
     {
       id: "pengaturan",
       label: "Profil & Garasi",
-      href: "/mitra/pengaturan",
+      href: "/mitra/verifikasi",
       icon: Settings,
-      activePattern: /^\/mitra\/pengaturan/,
+      activePattern: /^\/mitra\/verifikasi/,
     },
   ];
 

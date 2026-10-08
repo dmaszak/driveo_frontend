@@ -303,15 +303,19 @@ export const authStore = {
   },
 };
 
+
+// Static initial state for server-side rendering
+const INITIAL_AUTH_STATE = {
+  currentUser: null,
+  allUsers: SAMPLE_USERS,
+  activeRentalContext: null,
+};
+
 export function useAuthStore() {
   const state = useSyncExternalStore(
     authStore.subscribe,
     authStore.getSnapshot,
-    () => ({
-      currentUser: null,
-      allUsers: SAMPLE_USERS,
-      activeRentalContext: null,
-    })
+    () => INITIAL_AUTH_STATE
   );
 
   return [state, authStore] as const;
@@ -335,5 +339,3 @@ export function useAuth() {
     cancelDeletion: actions.cancelDeletion,
   };
 }
-
-

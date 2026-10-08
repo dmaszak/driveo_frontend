@@ -16,7 +16,7 @@ export function Footer() {
     <footer className="bg-slate-900 text-slate-300 pt-16 pb-12 border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         {/* Main Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
           {/* Brand Col */}
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center gap-2.5">
@@ -104,56 +104,6 @@ export function Footer() {
               </li>
             </ul>
           </div>
-
-          {/* Kategori Armada */}
-          <div className="space-y-3">
-            <h4 className="font-heading font-bold text-sm text-white uppercase tracking-wider">
-              Kategori Mobil
-            </h4>
-            <ul className="space-y-2 text-xs text-slate-400">
-              <li>
-                <Link
-                  href="/cari?kategori=MPV"
-                  className="hover:text-white transition-colors"
-                >
-                  MPV Keluarga 7-Kursi (Zenix, Avanza)
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/cari?kategori=SUV"
-                  className="hover:text-white transition-colors"
-                >
-                  SUV Tangguh (Xforce, Fortuner)
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/cari?kategori=CITY_CAR"
-                  className="hover:text-white transition-colors"
-                >
-                  City Car Lincah Hemat (Brio RS)
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/cari?kategori=EV"
-                  className="hover:text-white transition-colors"
-                >
-                  Mobil Listrik Ramah Lingkungan (Ioniq 5)
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/bandingkan"
-                  className="hover:text-blue-400 transition-colors font-semibold text-blue-400"
-                >
-                  Bandingkan Spesifikasi Mobil &rarr;
-                </Link>
-              </li>
-            </ul>
-          </div>
-
           {/* Kemitraan & Legalitas */}
           <div className="space-y-3">
             <h4 className="font-heading font-bold text-sm text-white uppercase tracking-wider">
@@ -162,7 +112,7 @@ export function Footer() {
             <ul className="space-y-2 text-xs text-slate-400">
               <li>
                 <Link
-                  href="/jadi-mitra"
+                  href="/mitra/daftar"
                   className="text-amber-400 hover:text-amber-300 font-semibold transition-colors flex items-center gap-1"
                 >
                   <span>Daftar Jadi Mitra Rental</span>
@@ -195,6 +145,9 @@ export function Footer() {
               </li>
             </ul>
           </div>
+
+          
+
         </div>
 
         {/* Bottom Bar: Copyright & Consumer Protection */}

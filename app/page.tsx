@@ -85,7 +85,7 @@ export default function GuestHomePage() {
   };
 
   const filteredVehicles =
-    activeTabCategory === "ALL"
+    activeTabCategory === "SEMUA_KENDARAAN"
       ? FEATURED_YOGYAKARTA_VEHICLES
       : FEATURED_YOGYAKARTA_VEHICLES.filter(
           (v) => v.category === activeTabCategory
@@ -160,108 +160,7 @@ export default function GuestHomePage() {
           </div>
 
           {/* 3. The Core Hero Search Engine Widget (FR-SEARCH-001/002) */}
-          <div className="mt-8 sm:mt-12">
-            <div className="bg-white/95 backdrop-blur-2xl rounded-3xl p-4 sm:p-6 shadow-2xl border border-white/90 max-w-5xl">
-              {/* Widget Header Tab */}
-              <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-slate-200/80">
-                <div className="flex items-center gap-2">
-                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-600 text-white shadow-xs">
-                    Lepas Kunci (Self-Drive)
-                  </span>
-                  <span className="hidden sm:inline text-xs text-slate-500">
-                    Bebas atur rute ke Malioboro, Candi Prambanan, hingga Pantai Kidul
-                  </span>
-                </div>
-                <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                  Armada Plat AB Siap Pakai
-                </span>
-              </div>
-
-              {/* Search Form Form Fields */}
-              <form
-                onSubmit={handleSearchSubmit}
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"
-              >
-                {/* 1. Lokasi Penjemputan DIY */}
-                <div className="space-y-1.5 text-left">
-                  <label className="text-[11px] font-bold text-slate-600 flex items-center gap-1.5 uppercase tracking-wider">
-                    <MapPin className="w-3.5 h-3.5 text-blue-600" />
-                    <span>Titik Jemput di Jogja</span>
-                  </label>
-                  <select
-                    value={selectedPickup}
-                    onChange={(e) => setSelectedPickup(e.target.value)}
-                    className="w-full text-xs sm:text-sm font-semibold text-slate-800 p-3 rounded-2xl border border-slate-200 bg-slate-50/70 hover:bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer min-h-[48px]"
-                  >
-                    {YOGYAKARTA_PICKUP_SPOTS.map((spot) => (
-                      <option key={spot.id} value={spot.id}>
-                        {spot.name} {spot.extraFee > 0 ? `(+Rp ${spot.extraFee / 1000}rb)` : "(Gratis)"}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* 2. Tanggal Mulai Sewa */}
-                <div className="space-y-1.5 text-left">
-                  <label className="text-[11px] font-bold text-slate-600 flex items-center gap-1.5 uppercase tracking-wider">
-                    <Calendar className="w-3.5 h-3.5 text-blue-600" />
-                    <span>Mulai Sewa</span>
-                  </label>
-                  <input
-                    type="date"
-                    value={startDate}
-                    min={new Date().toISOString().split("T")[0]}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full text-xs sm:text-sm font-semibold text-slate-800 p-3 rounded-2xl border border-slate-200 bg-slate-50/70 hover:bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer min-h-[48px]"
-                  />
-                </div>
-
-                {/* 3. Tanggal Selesai Sewa */}
-                <div className="space-y-1.5 text-left">
-                  <label className="text-[11px] font-bold text-slate-600 flex items-center gap-1.5 uppercase tracking-wider">
-                    <Calendar className="w-3.5 h-3.5 text-blue-600" />
-                    <span>Selesai Sewa</span>
-                  </label>
-                  <input
-                    type="date"
-                    value={endDate}
-                    min={startDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    className="w-full text-xs sm:text-sm font-semibold text-slate-800 p-3 rounded-2xl border border-slate-200 bg-slate-50/70 hover:bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer min-h-[48px]"
-                  />
-                </div>
-
-                {/* 4. Kategori Mobil & Tombol Cari */}
-                <div className="space-y-1.5 text-left">
-                  <label className="text-[11px] font-bold text-slate-600 flex items-center gap-1.5 uppercase tracking-wider">
-                    <Car className="w-3.5 h-3.5 text-blue-600" />
-                    <span>Tipe Kendaraan</span>
-                  </label>
-                  <div className="flex gap-2">
-                    <select
-                      value={selectedCategory}
-                      onChange={(e) => setSelectedCategory(e.target.value)}
-                      className="w-full text-xs sm:text-sm font-semibold text-slate-800 p-3 rounded-2xl border border-slate-200 bg-slate-50/70 hover:bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer min-h-[48px]"
-                    >
-                      <option value="ALL">Semua Kategori</option>
-                      <option value="MPV">MPV Keluarga (7 Kursi)</option>
-                      <option value="SUV">SUV Tangguh</option>
-                      <option value="CITY_CAR">City Car Lincah</option>
-                      <option value="EV">Mobil Listrik (EV)</option>
-                    </select>
-
-                    <button
-                      type="submit"
-                      className="px-5 sm:px-6 rounded-2xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-heading font-bold text-xs sm:text-sm shadow-md shadow-blue-600/30 hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer min-h-[48px] shrink-0"
-                    >
-                      <Search className="w-4 h-4" />
-                      <span className="hidden sm:inline">Cari</span>
-                    </button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
+          
         </div>
       </section>
 
@@ -398,7 +297,7 @@ export default function GuestHomePage() {
             {/* Category Filter Chips */}
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full">
               {[
-                { id: "ALL", label: "Semua Mobil" },
+                { id: "ALL", label: "Semua Kendaraan" },
                 { id: "MPV", label: "MPV Keluarga" },
                 { id: "SUV", label: "SUV Tangguh" },
                 { id: "CITY_CAR", label: "City Car" },
@@ -706,7 +605,7 @@ export default function GuestHomePage() {
                 Peluang Kemitraan Rental Lokal DIY
               </span>
               <h2 className="font-heading font-extrabold text-2xl sm:text-4xl text-white tracking-tight">
-                Punya Usaha Rental Mobil di Jogja? Bergabunglah dengan DriveO.
+                Punya Usaha Rental di Jogja? Bergabunglah dengan DriveO.
               </h2>
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
                 Digitalisasi operasional rental Anda dengan kalender terpadu, jaminan

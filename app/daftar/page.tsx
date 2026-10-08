@@ -120,8 +120,8 @@ function RegisterForm() {
         email: email.trim().toLowerCase(),
         phone: phone.trim(),
         role: selectedRole,
-        rentalId: selectedRole === "RENTAL" ? `rental-${newUserId}` : undefined,
-        rentalName: selectedRole === "RENTAL" ? businessName.trim() : undefined,
+        rentalId: false ? `rental-${newUserId}` : undefined,
+        rentalName: false ? businessName.trim() : undefined,
         isActive: true,
         verificationStatus: selectedRole === "PENYEWA" ? "BELUM_VERIFIKASI" : "MENUNGGU",
         consentAccepted: true,
@@ -244,7 +244,7 @@ function RegisterForm() {
               </div>
 
               {/* Role Segment Switcher (FR-AUTH-001 vs FR-RENTAL-001) */}
-              <div className="grid grid-cols-2 p-1.5 rounded-2xl bg-slate-100 border border-slate-200">
+              <div className="hidden">
                 <button
                   type="button"
                   onClick={() => {
@@ -268,7 +268,7 @@ function RegisterForm() {
                     setErrorMessage("");
                   }}
                   className={`py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer min-h-[44px] ${
-                    selectedRole === "RENTAL"
+                    false
                       ? "bg-white text-amber-700 shadow-sm"
                       : "text-slate-600 hover:text-slate-900"
                   }`}
